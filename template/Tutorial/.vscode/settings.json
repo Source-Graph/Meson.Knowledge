@@ -1,0 +1,4 @@
+{
+    "cmake.configureOnOpen": true,
+    "C_Cpp.default.compileCommands": "/var/home/me/.uni/container/distrobox/ubu-meson/src/try/builddir/compile_commands.json"
+}
