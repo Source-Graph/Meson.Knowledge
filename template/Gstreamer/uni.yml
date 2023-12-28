@@ -43,6 +43,7 @@
       - flex
       - bison
       - python3-dev
+      - yasm
     become: true
 
   - name: Backup src
