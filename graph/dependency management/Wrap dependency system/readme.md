@@ -3,3 +3,6 @@
 
 # WrapDB packages
 https://mesonbuild.com/Wrapdb-projects.html
+
+# tutorial:
+https://mesonbuild.com/GuiTutorial.html

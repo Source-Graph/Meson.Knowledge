@@ -1,0 +1,36 @@
+---
+- name: Install Meson build dependencies
+  hosts: localhost
+  vars:
+    repoUrl: "https://gitlab.freedesktop.org/gstreamer/gstreamer.git"
+    srcDir: src
+    buildDir: builddir
+  tasks:
+  # https://mesonbuild.com/Tutorial.html
+  - name: essential Dependencies
+    ansible.builtin.apt:
+      pkg:
+      - build-essential
+      - meson
+      - ninja-build
+      - gdb
+      # library: for this
+    become: true
+
+# https://gitlab.freedesktop.org/gstreamer/gstreamer#external-dependencies
+  - name: specific Dependencies
+    ansible.builtin.apt:
+      pkg:
+      - gitlint
+    become: true
+
+  - name: Meson setup
+    ansible.builtin.shell: "meson setup {{ buildDir }}"
+    args:
+      chdir: "{{ srcDir }}"
+      creates: "{{ srcDir }}/{{ buildDir }}"
+
+# Works:
+# os: Ubuntu
+# ver: 23.10
+# in: distrobox
