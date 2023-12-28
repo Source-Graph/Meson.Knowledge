@@ -1,0 +1,58 @@
+---
+- name: Install Meson build dependencies
+  hosts: localhost
+  vars:
+    repoUrl: "https://gitlab.freedesktop.org/gstreamer/gstreamer.git"
+    repoName: gstreamer
+    buildDir: builddir
+  tasks:
+  # https://mesonbuild.com/Tutorial.html
+  - name: essential Dependencies
+    ansible.builtin.apt:
+      pkg:
+      - build-essential
+      - meson
+      - ninja-build
+      - gdb
+      # library: for this
+    become: true
+
+  - name: Clone
+    ansible.builtin.git:
+      repo: "{{ repoUrl }}"
+      dest: "{{ repoName }}"
+      update: no
+
+# https://gitlab.freedesktop.org/gstreamer/gstreamer#external-dependencies
+  - name: specific Dependencies
+    ansible.builtin.apt:
+      pkg:
+      - gitlint
+      - valgrind
+#      - futex
+      - cmake
+      - libunwind-dev
+      - libdw-dev
+      - libgmp-dev
+      - libgsl-dev
+#      - m4
+      # works: https://github.com/takaswie/libhinoko/issues/2#issuecomment-670262459 & https://packages.ubuntu.com/mantic/python-gi-dev
+      - gobject-introspection
+      - python-gi-dev
+      - libgirepository1.0-dev
+      - flex
+      - bison
+      - python3-dev
+    become: true
+
+  - name: Backup src
+    ansible.builtin.shell: "tar -cvf {{ repoName }}.tar {{ repoName }}"
+    args:
+      creates: "{{ repoName }}.tar"
+
+  - name: Meson setup
+    ansible.builtin.shell: "meson setup {{ buildDir }}"
+    args:
+      chdir: "{{ repoName }}"
+      creates: "{{ repoName }}/{{ buildDir }}"
+    when: false
